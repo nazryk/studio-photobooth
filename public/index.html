@@ -1,0 +1,781 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Studio Photobooth</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Cabin+Sketch:wght@400;700&family=DM+Sans:wght@400;500;700&family=Poppins:wght@400;600;700&display=swap" rel="stylesheet">
+    <style>
+        *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+        :root {
+            --paper: #ffffff;   
+            --paper2: #f8f9fa;  
+            --paper3: #e9ecef;
+            --ink: #212529;     
+            --ink2: #495057;
+            --ink3: #868e96;
+            --ink4: #ced4da;
+            --rule: #212529;    
+            --rule2: rgba(33, 37, 41, 0.15); 
+            --accent: #fd7e14;  
+            --accent2: #228be6; 
+            --danger: #fa5252;  
+            --success: #40c057; 
+            
+            --font-groovy: 'Cabin Sketch', cursive; 
+            --font-ui: 'DM Sans', sans-serif;
+            --font-button: 'Poppins', sans-serif; 
+        }
+
+        body {
+            font-family: var(--font-ui);
+            background-color: var(--paper);
+            color: var(--ink);
+            min-height: 100vh;
+            overflow-x: hidden;
+            background-image: radial-gradient(var(--ink4) 1px, transparent 0);
+            background-size: 40px 40px;
+            background-position: -19px -19px;
+        }
+
+        /* HEADER */
+        .site-header {
+            display: flex; align-items: center; justify-content: space-between;
+            padding: 28px 48px 24px;
+            border-bottom: 2px solid var(--ink); 
+        }
+        
+        .site-logo {
+            font-family: var(--font-groovy); 
+            font-size: 36px; letter-spacing: 0.08em;
+            color: var(--ink); 
+            font-weight: 700;
+        }
+        .site-logo span { color: var(--accent2); } 
+
+        .page { max-width: 1400px; margin: 0 auto; padding: 48px 48px 80px; }
+
+        .divider { display: flex; align-items: center; gap: 16px; margin-bottom: 36px; }
+        .divider-label {
+            font-family: var(--font-groovy); font-size: 16px; letter-spacing: 0.1em; 
+            text-transform: uppercase; color: var(--ink); white-space: nowrap; font-weight: 700;
+        }
+        .divider-line { flex: 1; height: 1px; background: var(--rule2); }
+
+        /* BUTTONS ORGANIK & POPPINS */
+        .controls { margin-top: 16px; display: flex; flex-wrap: wrap; gap: 12px; align-items: center; }
+        .btn {
+            font-size: 13px; letter-spacing: 0.1em; text-transform: uppercase;
+            font-weight: 600; font-family: var(--font-button);
+            padding: 10px 24px; cursor: pointer;
+            border: 2px solid var(--ink); background: var(--paper); color: var(--ink);
+            transition: all 0.15s ease; 
+            border-radius: 255px 15px 225px 15px/15px 225px 15px 255px; 
+            box-shadow: 3px 3px 0px var(--ink); 
+        }
+        .btn:hover:not(:disabled) { background: var(--paper2); transform: translate(-2px, -2px); box-shadow: 5px 5px 0px var(--ink); }
+        .btn:active:not(:disabled) { transform: translate(3px, 3px); box-shadow: 0px 0px 0px var(--ink); }
+        .btn.primary { background: var(--ink); color: var(--paper); }
+        .btn.primary:hover { background: var(--ink2); color: var(--paper); }
+        .btn.tone { border-style: dashed; color: var(--ink2); box-shadow: 3px 3px 0px var(--ink4); }
+        .btn.tone:hover { border-style: solid; border-color: var(--ink); color: var(--ink); box-shadow: 5px 5px 0px var(--ink); }
+        .btn.danger-btn { border-color: var(--danger); color: var(--danger); box-shadow: 3px 3px 0px var(--danger); }
+        .btn.danger-btn:hover { background: var(--danger); color: white; box-shadow: 5px 5px 0px var(--ink); border-color: var(--ink); }
+        .btn.success-btn { border-color: var(--success); color: var(--success); box-shadow: 3px 3px 0px var(--success); }
+        .btn.success-btn:hover { background: var(--success); color: white; box-shadow: 5px 5px 0px var(--ink); border-color: var(--ink); }
+        .btn:disabled { opacity: 0.3; cursor: not-allowed; box-shadow: none; transform: none; }
+
+        .count-btn {
+            width: 40px; height: 40px; cursor: pointer;
+            border: 2px solid var(--ink); background: var(--paper);
+            color: var(--ink); font-family: var(--font-button); font-size: 16px; font-weight: 600;
+            border-radius: 255px 15px 225px 15px/15px 225px 15px 255px;
+            display: flex; align-items: center; justify-content: center;
+            transition: all 0.2s ease; box-shadow: 2px 2px 0px var(--ink);
+        }
+        .count-btn:hover:not(:disabled) { transform: translate(-1px, -1px); box-shadow: 3px 3px 0px var(--ink); }
+        .count-btn.active { background: var(--ink); color: var(--paper); box-shadow: none; transform: translate(2px, 2px); }
+
+        .fmt-group { display: flex; flex-direction: column; gap: 10px; margin-bottom: 24px; }
+        .fmt-label { font-size: 10px; letter-spacing: 0.25em; text-transform: uppercase; color: var(--ink); font-weight: 700; }
+        .fmt-row { display: flex; gap: 8px; flex-wrap: wrap; }
+
+        /* GALERI FRAME KECIL DI SETTINGS */
+        .template-gallery { display: flex; gap: 12px; overflow-x: auto; padding: 10px 4px 14px 4px; scrollbar-width: thin; scrollbar-color: var(--ink4) transparent; }
+        .template-thumb { width: 50px; height: 75px; border: 1px solid var(--ink3); border-radius: 4px; background: var(--paper3); cursor: pointer; position: relative; flex-shrink: 0; background-size: cover; background-position: center; transition: all 0.2s; display: flex; align-items: center; justify-content: center; }
+        .template-thumb:hover { border-color: var(--accent2); }
+        .template-thumb.active { border-color: var(--accent); border-width: 2px; box-shadow: 0 0 0 2px rgba(253, 126, 20, 0.2); }
+        .template-thumb.add-new { font-size: 24px; color: var(--ink3); background: var(--paper); }
+        .thumb-delete-btn { position: absolute; top: -8px; right: -8px; width: 20px; height: 20px; background: var(--paper); color: var(--danger); border-radius: 50%; font-size: 10px; display: flex; align-items: center; justify-content: center; border: 1px solid var(--danger); cursor: pointer; transition: all 0.2s; }
+        .thumb-delete-btn:hover { background: var(--danger); color: var(--paper); }
+
+        /* --- LAYAR PILIH FRAME (BARU) --- */
+        .frame-selection-layout { display: flex; gap: 48px; align-items: flex-start; justify-content: center; flex-wrap: wrap; }
+        .frame-preview-side { flex: 0.4; display: flex; flex-direction: column; align-items: center; gap: 24px; min-width: 300px; }
+        .frame-grid-side { flex: 0.6; min-width: 350px; }
+        
+        .big-preview-box {
+            width: 100%; max-width: 380px; aspect-ratio: 2/3; 
+            border: 2px solid var(--ink); background: var(--paper2); border-radius: 8px;
+            box-shadow: 6px 6px 0px var(--rule2);
+            background-size: cover; background-position: center;
+            display: flex; align-items: center; justify-content: center;
+            font-family: var(--font-groovy); font-size: 24px; color: var(--ink3);
+        }
+        
+        .big-start-btn { width: 100%; max-width: 380px; padding: 18px; font-size: 18px; text-align: center; }
+
+        .frame-grid-container {
+            display: grid; grid-template-columns: repeat(auto-fill, minmax(140px, 1fr)); gap: 20px;
+            max-height: 60vh; overflow-y: auto; padding: 10px;
+        }
+        .grid-frame-item {
+            aspect-ratio: 2/3; border: 2px solid var(--ink4); border-radius: 8px; background: var(--paper);
+            cursor: pointer; transition: all 0.2s; background-size: cover; background-position: center;
+            display: flex; align-items: center; justify-content: center; font-family: var(--font-button); font-weight: 600;
+            box-shadow: 2px 2px 0px rgba(0,0,0,0.05);
+        }
+        .grid-frame-item:hover { border-color: var(--ink); transform: translateY(-4px); box-shadow: 4px 6px 0px rgba(0,0,0,0.1); }
+        .grid-frame-item.selected { border-color: var(--accent); border-width: 4px; box-shadow: 0 0 0 4px rgba(253, 126, 20, 0.2); }
+
+        /* STUDIO LAYOUT */
+        .studio-layout { display: flex; gap: 64px; align-items: flex-start; justify-content: center; flex-wrap: wrap; }
+        .camera-col { flex: 1.2; min-width: 400px; max-width: 850px; }
+        .preview-col { flex: 0.8; display: flex; flex-direction: column; align-items: center; gap: 16px; }
+        .preview-lbl { font-size: 18px; letter-spacing: 0.1em; text-transform: uppercase; color: var(--ink); text-align: center; font-family: var(--font-groovy); }
+
+        /* VIEWFINDER MINIMALIS */
+        .viewfinder { position: relative; width: 100%; aspect-ratio: 16/9; background: #000; overflow: hidden; border-radius: 8px; border: 1px solid var(--ink4); box-shadow: 0 4px 12px rgba(0,0,0,0.05); }
+        .viewfinder video { width: 100%; height: 100%; object-fit: cover; transform: scaleX(-1); transition: filter 0.3s; }
+        .vf-corner { position: absolute; width: 20px; height: 20px; border-color: rgba(255,255,255,0.6); border-style: solid; }
+        .vf-corner.tl { top: 16px; left: 16px; border-width: 1px 0 0 1px; }
+        .vf-corner.tr { top: 16px; right: 16px; border-width: 1px 1px 0 0; }
+        .vf-corner.bl { bottom: 16px; left: 16px; border-width: 0 0 1px 1px; }
+        .vf-corner.br { bottom: 16px; right: 16px; border-width: 0 1px 1px 0; }
+        .vf-rec { position: absolute; top: 16px; right: 16px; z-index: 3; font-size: 10px; letter-spacing: 0.2em; text-transform: uppercase; color: rgba(255,255,255,0.8); display: flex; align-items: center; gap: 6px; font-weight: 700; }
+        .rec-dot { width: 6px; height: 6px; border-radius: 50%; background: var(--danger); box-shadow: 0 0 4px var(--danger); }
+        #countdown { position: absolute; top: 50%; left: 50%; transform: translate(-50%,-50%); font-family: var(--font-groovy); font-size: 100px; color: #fff; display: none; z-index: 10; letter-spacing: 2px; text-shadow: 0 2px 10px rgba(0,0,0,0.5); }
+        #flash { position: absolute; inset: 0; background: white; opacity: 0; pointer-events: none; z-index: 20; transition: opacity 0.15s ease-out; }
+        .pose-strip { position: absolute; bottom: 16px; left: 50%; transform: translateX(-50%); display: flex; gap: 8px; z-index: 5; }
+        .pose-dot { width: 6px; height: 6px; border-radius: 50%; border: 1px solid rgba(255,255,255,0.6); background: transparent; transition: all 0.3s; }
+        .pose-dot.done { background: #fff; border-color: #fff; }
+        .pose-dot.active { background: transparent; border-color: var(--accent); transform: scale(1.5); }
+        .status-bar { margin-top: 12px; font-size: 11px; color: var(--ink3); min-height: 18px; font-family: var(--font-ui); font-weight: 500; letter-spacing: 0.05em; }
+
+        .canvas-wrap { border: 1px solid var(--ink4); padding: 8px; background: var(--paper2); position: relative; border-radius: 4px; box-shadow: 0 2px 8px rgba(0,0,0,0.02); }
+        .cut-line-vis { position: absolute; top: 8px; bottom: 8px; width: 1px; background: repeating-linear-gradient(to bottom, var(--ink4) 0, var(--ink4) 4px, transparent 4px, transparent 8px); pointer-events: none; display: none; }
+        canvas { display: block; border: 1px solid var(--rule2); border-radius: 2px; }
+
+        .site-footer { text-align: center; padding: 28px 48px; border-top: 1px solid var(--rule2); font-family: var(--font-groovy); font-size: 16px; color: var(--ink4); }
+
+        /* MODALS */
+        .modal-backdrop { position: fixed; inset: 0; background: rgba(255,255,255,0.9); backdrop-filter: blur(4px); z-index: 100; display: flex; align-items: center; justify-content: center; opacity: 0; pointer-events: none; transition: opacity 0.3s; }
+        .modal-backdrop.visible { opacity: 1; pointer-events: all; }
+        .modal-box { background: var(--paper); border: 1px solid var(--rule2); padding: 40px 48px; text-align: center; max-width: 500px; width: 90%; border-radius: 8px; box-shadow: 0 10px 40px rgba(0,0,0,0.08); max-height: 90vh; overflow-y: auto; }
+        .modal-box h2 { font-family: var(--font-groovy); font-size: 32px; color: var(--ink); margin-bottom: 6px; text-shadow: none; font-weight: 700; }
+        .modal-box p { font-size: 11px; letter-spacing: 0.15em; text-transform: uppercase; color: var(--ink3); margin-bottom: 28px; font-weight: 500; }
+        input[type="file"] { display: none; }
+
+        .modal-box.modal-split { max-width: 700px; width: 95%; padding: 40px; display: flex; gap: 40px; align-items: center; justify-content: space-between; }
+        .modal-preview-side { flex: 1; display: flex; justify-content: center; align-items: center; background: var(--paper2); padding: 16px; border: 1px solid var(--rule2); border-radius: 8px; }
+        .modal-preview-side img { max-height: 400px; width: auto; max-width: 100%; border-radius: 4px; box-shadow: 0 4px 12px rgba(0,0,0,0.1); }
+        .modal-qr-side { flex: 1; display: flex; flex-direction: column; align-items: center; text-align: center; }
+
+        /* SCREENSAVER */
+        .screensaver { position: fixed; inset: 0; z-index: 999; background: #fff; color: var(--ink); display: flex; align-items: center; justify-content: center; text-align: center; opacity: 0; pointer-events: none; transition: opacity 0.5s ease-in-out; overflow: hidden; }
+        .screensaver.visible { opacity: 1; pointer-events: all; cursor: pointer; }
+        #ss-video { position: absolute; top: 0; left: 0; width: 100%; height: 100%; object-fit: cover; transform: scaleX(-1); z-index: 1; }
+        .ss-overlay { position: absolute; inset: 0; background: rgba(255,255,255,0.7); z-index: 2; backdrop-filter: blur(2px); }
+        .ss-content { position: relative; z-index: 3; animation: pulse 2s infinite; }
+        @keyframes pulse { 0% { transform: scale(1); opacity: 0.8; } 50% { transform: scale(1.05); opacity: 1; } 100% { transform: scale(1); opacity: 0.8; } }
+
+        /* DRAG & DROP EDITOR STYLE */
+        .slot-box { position: absolute; border: 1px dashed var(--accent2); background: rgba(34, 139, 230, 0.1); cursor: move; resize: both; overflow: hidden; box-sizing: border-box; box-shadow: none; }
+        .slot-box:active { cursor: grabbing; background: rgba(34, 139, 230, 0.2); }
+        .slot-box::after { content: attr(data-index); position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); color: var(--accent2); font-weight: 700; font-size: 18px; pointer-events: none; font-family: var(--font-button); }
+
+        @media print { body * { visibility: hidden; } * { transform: none !important; position: static !important; margin: 0 !important; padding: 0 !important; } #canvas { visibility: visible !important; position: absolute !important; top: 0 !important; left: 0 !important; width: 100% !important; height: 100% !important; object-fit: contain !important; } html, body { height: 100% !important; overflow: hidden !important; background: white !important; } }
+    </style>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gifshot/0.3.2/gifshot.min.js"></script>
+</head>
+<body>
+
+<div id="screensaver" class="screensaver">
+    <video id="ss-video" autoplay playsinline muted></video>
+    <div class="ss-overlay"></div>
+    <div class="ss-content">
+        <h1 style="font-family: var(--font-groovy); font-size: 72px; color: var(--ink); margin-bottom: 10px; letter-spacing: 2px;">Studio Photobooth</h1>
+        <p style="font-size: 16px; letter-spacing: 0.2em; text-transform: uppercase; font-weight: 700; font-family: var(--font-button);">Sentuh layar untuk memulai</p>
+    </div>
+</div>
+
+<header class="site-header">
+    <div class="site-logo">Studio <span>Photobooth</span></div>
+    <button class="btn tone" id="settings-trigger" style="font-size: 18px; padding: 6px 12px; border-radius: 50%;">⚙️</button>
+</header>
+
+<main class="page" id="frame-select-screen" style="display: none;">
+    <div class="divider"><div class="divider-label">Pilih Frame Kamu</div><div class="divider-line"></div></div>
+    
+    <div class="frame-selection-layout">
+        <div class="frame-preview-side">
+            <div class="big-preview-box" id="big-frame-preview">NO FRAME</div>
+            <button class="btn primary big-start-btn" id="btn-start-photo">START PHOTO 📸</button>
+        </div>
+        <div class="frame-grid-side">
+            <div class="frame-grid-container" id="main-frame-grid">
+                </div>
+        </div>
+    </div>
+</main>
+
+<main class="page" id="studio-screen" style="display: none;">
+    <div class="divider"><div class="divider-label">Sesi Foto</div><div class="divider-line"></div></div>
+    <div class="studio-layout">
+
+        <div class="camera-col">
+            <div class="viewfinder">
+                <video id="video" autoplay playsinline></video>
+                <div class="vf-corner tl"></div><div class="vf-corner tr"></div>
+                <div class="vf-corner bl"></div><div class="vf-corner br"></div>
+                <div class="vf-rec"><div class="rec-dot"></div>Live</div>
+                <div id="countdown">3</div>
+                <div id="flash"></div>
+                <div class="pose-strip" id="pose-strip"></div>
+            </div>
+
+            <div class="controls">
+                <button class="btn tone" id="bw-toggle">B&W Off</button>
+                <button class="btn primary" id="snap">Mulai Sesi</button>
+                
+                <button class="btn success-btn" id="btn-done" style="display:none;">DONE</button>
+                <button class="btn danger-btn" id="btn-retake-current" style="display:none;">Ulangi Foto Ini</button>
+                
+                <button class="btn success-btn" id="process" style="display:none">Cetak & QR</button>
+                <button class="btn tone" id="make-gif" style="display:none">Download GIF</button>
+                <button class="btn danger-btn" id="reset" style="display:none">↺ Ulangi Sesi</button>
+            </div>
+            <div class="status-bar" id="status">Tekan Mulai Sesi untuk mengambil gambar</div>
+        </div>
+
+        <div class="preview-col">
+            <div class="preview-lbl" id="preview-lbl">Preview 4R</div>
+            <div class="canvas-wrap" id="canvas-wrap">
+                <div class="cut-line-vis" id="cut-line"></div>
+                <canvas id="canvas" width="600" height="900" style="width:360px;height:auto;background:#fff;"></canvas>
+            </div>
+        </div>
+
+    </div>
+</main>
+
+<footer class="site-footer">Studio Photobooth &ensp;—&ensp; <span style="color:var(--accent2); font-weight: bold; font-family: var(--font-button);">Capture your moment</span></footer>
+
+<div class="modal-backdrop" id="settings-modal">
+    <div class="modal-box">
+        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 24px;">
+            <h2 style="margin: 0; font-size: 24px;">Pengaturan Layout</h2>
+            <button class="btn tone" onclick="closeSettings()" style="padding: 6px 12px; font-size: 14px;">✕</button>
+        </div>
+        
+        <div class="fmt-group">
+            <div class="fmt-label">Mode Cetak & Jumlah Foto</div>
+            <div class="fmt-row" style="margin-bottom: 8px;">
+                <button class="btn" id="set-single" onclick="selectMode('single')">Single</button>
+                <button class="btn" id="set-strip" onclick="selectMode('strip')">Strip</button>
+            </div>
+            <div class="fmt-row" id="count-options"></div>
+        </div>
+
+        <div class="fmt-group">
+            <div class="fmt-label">Upload Frame Master</div>
+            <div class="template-gallery" id="template-gallery"></div>
+            <input type="file" id="template-upload" accept="image/png" style="display:none">
+        </div>
+
+        <hr style="border: 0; border-top: 1px dashed var(--rule2); margin: 24px 0;">
+
+        <div class="fmt-group" style="margin-bottom: 0;">
+            <div class="fmt-label" style="text-align: center;">Editor Posisi Foto & QR</div>
+            <div style="display: flex; justify-content: center;">
+                <div style="position: relative; border: 1px solid var(--ink4); background: var(--paper2); padding: 8px; display: inline-block;">
+                    <canvas id="modal-canvas" width="600" height="900" style="width: 180px; height: auto; display: block; border: 1px solid var(--rule2);"></canvas>
+                    <div id="layout-editor-layer" style="display:none; position:absolute; top:8px; left:8px; z-index: 50;"></div>
+                </div>
+            </div>
+            
+            <div style="margin-top: 16px; display: flex; gap: 8px; justify-content: center;">
+                <button class="btn tone" id="btn-edit-layout" style="font-size: 10px; padding: 8px 12px; flex:1;">Geser Posisi Foto</button>
+                <button class="btn success-btn" id="btn-save-layout" style="display:none; font-size: 10px; padding: 8px 12px; flex:1;">✓ Simpan Layout</button>
+                <button class="btn danger-btn" id="btn-reset-layout" style="font-size: 10px; padding: 8px 12px; flex:1;">Reset Default</button>
+            </div>
+            <div style="font-size: 10px; color: var(--ink3); text-align: center; margin-top: 8px; line-height: 1.4; font-weight: 500;">
+                *Pastikan klik frame di atas dulu. Lalu tarik kotak editor (Termasuk QR) agar pas dengan bolongan template.
+            </div>
+            <div style="margin-top: 24px; text-align: center;">
+                <button class="btn primary" style="width: 100%; padding: 12px; font-size: 12px;" onclick="closeSettings()">Selesai & Tutup</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="modal-backdrop" id="qr-backdrop">
+    <div class="modal-box modal-split">
+        <div class="modal-preview-side"><img id="final-preview-img" src="" alt="Preview Hasil"></div>
+        <div class="modal-qr-side">
+            <h2>Scan &amp; Download</h2><p>Arahkan kamera ke QR code</p>
+            <img id="qr-img" src="" alt="QR Code" style="width: 220px; height: 220px; border: 1px solid var(--rule2); border-radius:4px; margin-bottom: 24px;">
+            <button class="btn primary" style="width:100%; padding:14px; font-size: 12px;" onclick="location.reload()">Selesai &amp; Kembali</button>
+        </div>
+    </div>
+</div>
+
+<div class="modal-backdrop" id="gif-backdrop">
+    <div class="modal-box" style="max-width: 420px;">
+        <h2>Preview GIF</h2><p>Preview hasil animasimu!</p>
+        <img id="gif-preview-img" src="" alt="GIF Preview" style="width:100%; max-height: 350px; object-fit: contain; border: 1px solid var(--rule2); border-radius:4px; margin-bottom: 24px; background: #fff;">
+        <div style="display: flex; gap: 12px; justify-content: center;">
+            <button class="btn tone" style="width: 50%" onclick="document.getElementById('gif-backdrop').classList.remove('visible')">Tutup</button>
+            <a id="gif-download-link" href="" download="photobooth-animasi.gif" class="btn primary" style="width: 50%; text-decoration:none; display:flex; align-items:center; justify-content:center;">Download GIF</a>
+        </div>
+    </div>
+</div>
+
+<script>
+const SINGLE_W = 600, SINGLE_H = 900;
+const SLOT_DEFS = {
+    '4r': { label: '4R', allowedCounts: [1, 2, 3, 4], slots: {
+        1: [{x:5, y:5, w:590, h:890}],
+        2: [{x:5, y:5, w:590, h:440}, {x:5, y:455, w:590, h:440}],
+        3: [{x:5, y:5, w:590, h:290}, {x:5, y:305, w:590, h:290}, {x:5, y:605, w:590, h:290}],
+        4: [{x:5, y:5, w:292, h:442}, {x:302, y:5, w:292, h:442}, {x:5, y:452, w:292, h:442}, {x:302, y:452, w:292, h:442}]
+    }}
+};
+
+let currentSize = '4r', photoCount = 2, printMode = 'single';
+let isBwMode = false, capturedImages = [];
+
+let customLayouts = {}; if (localStorage.getItem('savedCustomLayouts')) try { customLayouts = JSON.parse(localStorage.getItem('savedCustomLayouts')); } catch(e){}
+let customQRLayouts = {}; if (localStorage.getItem('savedCustomQRLayouts')) try { customQRLayouts = JSON.parse(localStorage.getItem('savedCustomQRLayouts')); } catch(e){}
+
+let savedTemplates = [];     
+let templateImages = [];     
+let activeTemplateIndex = -1; 
+
+const video = document.getElementById('video'), canvas = document.getElementById('canvas'), ssVideo = document.getElementById('ss-video');
+const ctx = canvas.getContext('2d'), modalCanvas = document.getElementById('modal-canvas'), modalCtx = modalCanvas.getContext('2d');
+const snapBtn = document.getElementById('snap'), processBtn = document.getElementById('process'), makeGifBtn = document.getElementById('make-gif'), resetBtn = document.getElementById('reset'), bwToggle = document.getElementById('bw-toggle'), doneBtn = document.getElementById('btn-done'), retakeCurrentBtn = document.getElementById('btn-retake-current');
+const countdownEl = document.getElementById('countdown'), flashEl = document.getElementById('flash'), statusEl = document.getElementById('status'), poseStrip = document.getElementById('pose-strip'), cutLine = document.getElementById('cut-line');
+
+const beepSound = new Audio('https://actions.google.com/sounds/v1/alarms/beep_short.ogg');
+const shutterSound = new Audio('https://actions.google.com/sounds/v1/tools/camera_shutter.ogg');
+
+// CAMERA
+navigator.mediaDevices.getUserMedia({ video: { width: 1280, height: 720 } }).then(s => { video.srcObject = s; ssVideo.srcObject = s; }).catch(() => { statusEl.textContent = 'Akses kamera ditolak.'; });
+
+// MODALS & SCREENS
+const settingsModal = document.getElementById('settings-modal');
+document.getElementById('settings-trigger').onclick = () => settingsModal.classList.add('visible');
+function closeSettings() { settingsModal.classList.remove('visible'); rebuildCanvas(); updateLabel(); renderMainFrameGrid(); }
+
+// LOGIC COORDS
+function getSlots() {
+    const layoutKey = `template-${activeTemplateIndex}-${photoCount}-${printMode}`;
+    if (customLayouts[layoutKey]) return customLayouts[layoutKey];
+    if (photoCount === 1 && printMode === 'single') return [{x: 5, y: 5, w: 890, h: 590}];
+    let baseSlots = SLOT_DEFS[currentSize].slots[photoCount];
+    if (printMode === 'strip' && photoCount === 4) return [{x:5,y:5,w:590,h:215}, {x:5,y:230,w:590,h:215}, {x:5,y:455,w:590,h:215}, {x:5,y:680,w:590,h:215}].map(s => ({ x: s.x/2, y: s.y, w: s.w/2, h: s.h }));
+    if (printMode === 'single') return baseSlots;
+    return baseSlots.map(s => ({ x: s.x/2, y: s.y, w: s.w/2, h: s.h }));
+}
+function getQRPos() {
+    const layoutKey = `template-${activeTemplateIndex}-${printMode}`;
+    if (customQRLayouts[layoutKey]) return customQRLayouts[layoutKey];
+    return { x: SINGLE_W - 58 - 15, y: SINGLE_H - 58 - 10, w: 58, h: 58 };
+}
+function getCanvasDims() { return (photoCount === 1 && printMode === 'single') ? { w: SINGLE_H, h: SINGLE_W } : { w: SINGLE_W, h: SINGLE_H }; }
+
+// LAYOUT SETUP
+function selectMode(m) {
+    printMode = m; if (printMode === 'strip' && photoCount === 1) photoCount = 2;
+    document.getElementById('set-single').classList.toggle('active-state', m === 'single');
+    document.getElementById('set-strip').classList.toggle('active-state', m === 'strip');
+    renderCountButtons(); rebuildCanvas(); updateLabel();
+}
+function renderCountButtons() {
+    const el = document.getElementById('count-options'); el.innerHTML = '';
+    [1,2,3,4].forEach(n => {
+        const b = document.createElement('button'); b.className = 'count-btn' + (n === photoCount ? ' active' : ''); b.textContent = n;
+        if (printMode === 'strip' && n === 1) b.disabled = true; else b.onclick = () => { photoCount = n; renderCountButtons(); rebuildCanvas(); updateLabel(); };
+        el.appendChild(b);
+    });
+}
+
+function drawFinalCanvas() {
+    ctx.fillStyle = '#ffffff'; ctx.fillRect(0, 0, canvas.width, canvas.height); 
+    const slots = getSlots();
+    if (capturedImages.length > 0) {
+        capturedImages.forEach((img, i) => { if (!img) return; ctx.drawImage(img, slots[i].x, slots[i].y, slots[i].w, slots[i].h); if (printMode === 'strip') ctx.drawImage(img, slots[i].x + (SINGLE_W / 2), slots[i].y, slots[i].w, slots[i].h); });
+    } else {
+        slots.forEach(s => { ctx.fillStyle = 'rgba(34, 139, 230, 0.1)'; ctx.fillRect(s.x, s.y, s.w, s.h); if (printMode === 'strip') ctx.fillRect(s.x + (SINGLE_W / 2), s.y, s.w, s.h); });
+    }
+    if (activeTemplateIndex >= 0 && templateImages[activeTemplateIndex]) { ctx.drawImage(templateImages[activeTemplateIndex], 0, 0, canvas.width, canvas.height); }
+    modalCtx.clearRect(0, 0, modalCanvas.width, modalCanvas.height); modalCtx.drawImage(canvas, 0, 0);
+}
+
+function rebuildCanvas() {
+    const { w, h } = getCanvasDims(); canvas.width = w; canvas.height = h; modalCanvas.width = w; modalCanvas.height = h;
+    const canvasEl = document.getElementById('canvas');
+    if (photoCount === 1 && printMode === 'single') { canvasEl.style.width = '480px'; modalCanvas.style.width = '240px'; } else { canvasEl.style.width = '360px'; modalCanvas.style.width = '180px'; }
+    canvasEl.style.height = 'auto'; modalCanvas.style.height = 'auto';
+    if (printMode === 'strip') { cutLine.style.left = '50%'; cutLine.style.transform = 'translateX(-50%)'; cutLine.style.display = 'block'; } else { cutLine.style.display = 'none'; cutLine.style.transform = 'none'; }
+    if(document.getElementById('layout-editor-layer').style.display === 'block') { document.getElementById('btn-save-layout').click(); }
+    drawFinalCanvas();
+}
+
+// --- LOGIKA EDITOR DRAG & DROP FOTO + QR ---
+const editorLayer = document.getElementById('layout-editor-layer');
+const btnEditLayout = document.getElementById('btn-edit-layout');
+const btnSaveLayout = document.getElementById('btn-save-layout');
+const btnResetLayout = document.getElementById('btn-reset-layout');
+
+btnEditLayout.onclick = () => {
+    btnEditLayout.style.display = 'none';
+    btnSaveLayout.style.display = 'inline-block';
+    editorLayer.style.display = 'block';
+    
+    editorLayer.style.width = modalCanvas.clientWidth + 'px';
+    editorLayer.style.height = modalCanvas.clientHeight + 'px';
+    editorLayer.innerHTML = '';
+
+    const scaleX = modalCanvas.clientWidth / modalCanvas.width;
+    const scaleY = modalCanvas.clientHeight / modalCanvas.height;
+    
+    // 1. Kotak Foto
+    const slots = getSlots();
+    slots.forEach((s, i) => {
+        const box = document.createElement('div');
+        box.className = 'slot-box'; box.dataset.index = i + 1;
+        box.style.left = (s.x * scaleX) + 'px'; box.style.top = (s.y * scaleY) + 'px';
+        box.style.width = (s.w * scaleX) + 'px'; box.style.height = (s.h * scaleY) + 'px';
+
+        // EFEK CERMIN (HANYA MUNCUL DI MODE STRIP)
+        let mirrorBox = null;
+        if (printMode === 'strip') {
+            mirrorBox = document.createElement('div');
+            mirrorBox.className = 'slot-box';
+            mirrorBox.dataset.isMirror = 'true'; // Penanda ini cuma cermin
+            mirrorBox.style.left = ((s.x + (SINGLE_W / 2)) * scaleX) + 'px';
+            mirrorBox.style.top = (s.y * scaleY) + 'px';
+            mirrorBox.style.width = (s.w * scaleX) + 'px';
+            mirrorBox.style.height = (s.h * scaleY) + 'px';
+            mirrorBox.style.backgroundColor = 'rgba(253, 126, 20, 0.2)'; 
+            mirrorBox.style.borderColor = 'var(--accent)';
+            mirrorBox.style.pointerEvents = 'none'; // Gak bisa disentuh
+            mirrorBox.style.resize = 'none';
+            mirrorBox.innerHTML = '<span style="position:absolute; top:50%; left:50%; transform:translate(-50%,-50%); font-weight:bold; font-size:12px; color:var(--accent); font-family:var(--font-button);">MIRROR</span>';
+            editorLayer.appendChild(mirrorBox);
+        }
+
+        let isDragging = false, startX, startY, startLeft, startTop;
+        box.addEventListener('mousedown', (e) => {
+            const rect = box.getBoundingClientRect();
+            if (e.clientX - rect.left > rect.width - 20 && e.clientY - rect.top > rect.height - 20) return;
+            isDragging = true; startX = e.clientX; startY = e.clientY;
+            startLeft = parseFloat(box.style.left); startTop = parseFloat(box.style.top);
+        });
+        
+        window.addEventListener('mousemove', (e) => {
+            if (!isDragging) return;
+            box.style.left = (startLeft + (e.clientX - startX)) + 'px';
+            box.style.top = (startTop + (e.clientY - startY)) + 'px';
+            // Bikin cerminnya gerak ngikutin kotak asli
+            if (mirrorBox) {
+                mirrorBox.style.left = (parseFloat(box.style.left) + ((SINGLE_W / 2) * scaleX)) + 'px';
+                mirrorBox.style.top = box.style.top;
+            }
+        });
+        window.addEventListener('mouseup', () => { isDragging = false; });
+        
+        // Bikin cerminnya ikut nge-resize kalau kotak ditarik ujungnya
+        new ResizeObserver(() => {
+            if (mirrorBox) {
+                mirrorBox.style.width = box.style.width;
+                mirrorBox.style.height = box.style.height;
+            }
+        }).observe(box);
+
+        editorLayer.appendChild(box);
+    });
+
+    // 2. Kotak QR
+    const qrPos = getQRPos();
+    const qrBox = document.createElement('div');
+    qrBox.className = 'slot-box'; 
+    qrBox.dataset.isQr = 'true';
+    qrBox.style.left = (qrPos.x * scaleX) + 'px'; 
+    qrBox.style.top = (qrPos.y * scaleY) + 'px';
+    qrBox.style.width = (qrPos.w * scaleX) + 'px'; 
+    qrBox.style.height = (qrPos.h * scaleY) + 'px';
+    qrBox.style.borderColor = '#212529'; 
+    qrBox.style.backgroundColor = 'rgba(33, 37, 41, 0.2)';
+    qrBox.style.resize = 'none';
+    qrBox.innerHTML = '<span style="position:absolute; top:50%; left:50%; transform:translate(-50%,-50%); font-weight:bold; font-size:12px; color:#212529; font-family:var(--font-button);">QR</span>';
+    
+    // CERMIN UNTUK QR CODE
+    let mirrorQR = null;
+    if (printMode === 'strip') {
+        mirrorQR = document.createElement('div');
+        mirrorQR.className = 'slot-box';
+        mirrorQR.dataset.isMirror = 'true';
+        mirrorQR.style.left = ((qrPos.x - (SINGLE_W / 2)) * scaleX) + 'px';
+        mirrorQR.style.top = (qrPos.y * scaleY) + 'px';
+        mirrorQR.style.width = (qrPos.w * scaleX) + 'px';
+        mirrorQR.style.height = (qrPos.h * scaleY) + 'px';
+        mirrorQR.style.borderColor = '#212529'; 
+        mirrorQR.style.backgroundColor = 'rgba(33, 37, 41, 0.1)';
+        mirrorQR.style.pointerEvents = 'none';
+        mirrorQR.style.resize = 'none';
+        mirrorQR.innerHTML = '<span style="position:absolute; top:50%; left:50%; transform:translate(-50%,-50%); font-weight:bold; font-size:10px; color:#212529; font-family:var(--font-button);">QR MIRROR</span>';
+        editorLayer.appendChild(mirrorQR);
+    }
+
+    let isDraggingQR = false, startXQR, startYQR, startLeftQR, startTopQR;
+    qrBox.addEventListener('mousedown', (e) => {
+        isDraggingQR = true; startXQR = e.clientX; startYQR = e.clientY;
+        startLeftQR = parseFloat(qrBox.style.left); startTopQR = parseFloat(qrBox.style.top);
+    });
+    window.addEventListener('mousemove', (e) => {
+        if (!isDraggingQR) return;
+        qrBox.style.left = (startLeftQR + (e.clientX - startXQR)) + 'px';
+        qrBox.style.top = (startTopQR + (e.clientY - startYQR)) + 'px';
+        if (mirrorQR) {
+            mirrorQR.style.left = (parseFloat(qrBox.style.left) - ((SINGLE_W / 2) * scaleX)) + 'px';
+            mirrorQR.style.top = qrBox.style.top;
+        }
+    });
+    window.addEventListener('mouseup', () => { isDraggingQR = false; });
+    editorLayer.appendChild(qrBox);
+};
+
+btnSaveLayout.onclick = () => {
+    btnEditLayout.style.display = 'inline-block';
+    btnSaveLayout.style.display = 'none';
+    editorLayer.style.display = 'none';
+
+    const scaleX = modalCanvas.width / modalCanvas.clientWidth;
+    const scaleY = modalCanvas.height / modalCanvas.clientHeight;
+    
+    // Saring box: JANGAN SIMPAN CERMIN DAN QR
+    const newSlots = Array.from(editorLayer.children)
+        .filter(box => box.dataset.isQr !== 'true' && box.dataset.isMirror !== 'true')
+        .map(box => ({
+            x: parseFloat(box.style.left) * scaleX, y: parseFloat(box.style.top) * scaleY,
+            w: parseFloat(box.style.width) * scaleX, h: parseFloat(box.style.height) * scaleY
+        }));
+    
+    const qrDiv = Array.from(editorLayer.children).find(box => box.dataset.isQr === 'true');
+    const layoutKey = `template-${activeTemplateIndex}-${photoCount}-${printMode}`;
+    
+    customLayouts[layoutKey] = newSlots;
+    localStorage.setItem('savedCustomLayouts', JSON.stringify(customLayouts));
+
+    if (qrDiv) {
+        customQRLayouts[layoutKey] = {
+            x: parseFloat(qrDiv.style.left) * scaleX, y: parseFloat(qrDiv.style.top) * scaleY,
+            w: 58, h: 58
+        };
+        localStorage.setItem('savedCustomQRLayouts', JSON.stringify(customQRLayouts));
+    }
+
+    drawFinalCanvas();
+};
+
+btnResetLayout.onclick = () => {
+    const layoutKey = `template-${activeTemplateIndex}-${photoCount}-${printMode}`;
+    delete customLayouts[layoutKey];
+    delete customQRLayouts[layoutKey];
+    localStorage.setItem('savedCustomLayouts', JSON.stringify(customLayouts));
+    localStorage.setItem('savedCustomQRLayouts', JSON.stringify(customQRLayouts));
+
+    drawFinalCanvas();
+    if (editorLayer.style.display === 'block') btnEditLayout.click(); 
+};
+
+// GALLERY & UPLOAD (SETTINGS)
+function renderGallery() {
+    const gal = document.getElementById('template-gallery'); gal.innerHTML = '';
+    const noFrame = document.createElement('div'); noFrame.className = 'template-thumb' + (activeTemplateIndex === -1 ? ' active' : '');
+    noFrame.innerHTML = '<span style="font-size:8px; text-align:center; font-weight:bold; color:var(--ink);">NO<br>FRAME</span>';
+    noFrame.onclick = () => { activeTemplateIndex = -1; renderGallery(); rebuildCanvas(); }; gal.appendChild(noFrame);
+    savedTemplates.forEach((base64, idx) => {
+        const thumb = document.createElement('div'); thumb.className = 'template-thumb' + (activeTemplateIndex === idx ? ' active' : '');
+        thumb.style.backgroundImage = `url(${base64})`; thumb.onclick = () => { activeTemplateIndex = idx; renderGallery(); rebuildCanvas(); };
+        const delBtn = document.createElement('div'); delBtn.className = 'thumb-delete-btn'; delBtn.innerHTML = '✕';
+        delBtn.onclick = (e) => { e.stopPropagation(); if(!confirm('Hapus frame ini?')) return; savedTemplates.splice(idx, 1); templateImages.splice(idx, 1); if (activeTemplateIndex === idx) activeTemplateIndex = -1; else if (activeTemplateIndex > idx) activeTemplateIndex--; localStorage.setItem('savedTemplatesList', JSON.stringify(savedTemplates)); renderGallery(); renderMainFrameGrid(); rebuildCanvas(); };
+        thumb.appendChild(delBtn); gal.appendChild(thumb);
+    });
+    const addBtn = document.createElement('div'); addBtn.className = 'template-thumb add-new'; addBtn.innerHTML = '+';
+    addBtn.onclick = () => document.getElementById('template-upload').click(); gal.appendChild(addBtn);
+}
+
+document.getElementById('template-upload').onchange = (e) => {
+    const file = e.target.files[0]; if (!file) return; const reader = new FileReader();
+    reader.onload = ev => {
+        try {
+            const base64 = ev.target.result; savedTemplates.push(base64); 
+            const img = new Image(); img.onload = () => { templateImages.push(img); activeTemplateIndex = savedTemplates.length - 1; localStorage.setItem('savedTemplatesList', JSON.stringify(savedTemplates)); renderGallery(); renderMainFrameGrid(); rebuildCanvas(); }; img.src = base64;
+        } catch(err) { alert('Memori browser penuh! Hapus frame lama.'); }
+    }; reader.readAsDataURL(file); e.target.value = ''; 
+};
+
+try {
+    const stored = localStorage.getItem('savedTemplatesList');
+    if (stored) {
+        savedTemplates = JSON.parse(stored);
+        savedTemplates.forEach((base64, idx) => {
+            let img = new Image(); img.onload = () => { if(idx === savedTemplates.length - 1) rebuildCanvas(); };
+            img.src = base64; templateImages[idx] = img;
+        });
+        if (savedTemplates.length > 0) activeTemplateIndex = 0; 
+    }
+} catch(e) {}
+
+// --- LOGIKA LAYAR PILIH FRAME (PENGUNJUNG) ---
+function renderMainFrameGrid() {
+    const grid = document.getElementById('main-frame-grid');
+    const bigPreview = document.getElementById('big-frame-preview');
+    grid.innerHTML = '';
+    
+    // Update Big Preview
+    if (activeTemplateIndex === -1) {
+        bigPreview.style.backgroundImage = 'none'; bigPreview.textContent = 'NO FRAME';
+    } else if (savedTemplates[activeTemplateIndex]) {
+        bigPreview.style.backgroundImage = `url(${savedTemplates[activeTemplateIndex]})`; bigPreview.textContent = '';
+    }
+
+    // Item: No Frame
+    const noFrameItem = document.createElement('div');
+    noFrameItem.className = 'grid-frame-item' + (activeTemplateIndex === -1 ? ' selected' : '');
+    noFrameItem.textContent = 'NO FRAME';
+    noFrameItem.onclick = () => { activeTemplateIndex = -1; renderMainFrameGrid(); };
+    grid.appendChild(noFrameItem);
+
+    // Items: Templates
+    savedTemplates.forEach((base64, idx) => {
+        const item = document.createElement('div');
+        item.className = 'grid-frame-item' + (activeTemplateIndex === idx ? ' selected' : '');
+        item.style.backgroundImage = `url(${base64})`;
+        item.onclick = () => { activeTemplateIndex = idx; renderMainFrameGrid(); };
+        grid.appendChild(item);
+    });
+}
+
+document.getElementById('btn-start-photo').onclick = () => {
+    document.getElementById('frame-select-screen').style.display = 'none';
+    document.getElementById('studio-screen').style.display = 'block';
+    rebuildCanvas(); // Terapkan frame & koordinat terpilih ke layar utama
+};
+
+// CAMERA CAPTURE LOGIC
+function captureSlot(slot) {
+    const { w, h } = slot; const off = document.createElement('canvas'); off.width = w; off.height = h; const oc = off.getContext('2d');
+    oc.filter = isBwMode ? 'grayscale(100%) brightness(108%) contrast(112%)' : 'none'; oc.save(); oc.translate(w/2, h/2); oc.scale(-1, 1); 
+    const vw=video.videoWidth, vh=video.videoHeight, r=w/h; let sx,sy,sw,sh;
+    if ((vw/vh)>r){sh=vh;sw=vh*r;sx=(vw-sw)/2;sy=0;} else{sw=vw;sh=vw/r;sx=0;sy=(vh-sh)/2;}
+    oc.drawImage(video,sx,sy,sw,sh,-w/2,-h/2,w,h); oc.restore(); oc.filter='none'; return off;
+}
+function drawPhotoInSlot(i) { flashEl.style.opacity='1'; setTimeout(()=>flashEl.style.opacity='0',150); capturedImages[i] = captureSlot(getSlots()[i]); drawFinalCanvas(); }
+function renderPoseDots(total, done) { poseStrip.innerHTML=''; for(let i=0;i<total;i++){ const d=document.createElement('div'); d.className='pose-dot'+(i<done?' done':i===done?' active':''); poseStrip.appendChild(d); } }
+function updateLabel() { document.getElementById('preview-lbl').textContent = `4R · ${photoCount} foto${printMode === 'strip' ? ' · Strip ×2' : ' · Single'}`; }
+
+bwToggle.onclick = () => { isBwMode = !isBwMode; video.style.filter = isBwMode ? 'grayscale(100%) brightness(108%) contrast(112%)' : ''; bwToggle.textContent = isBwMode ? 'B&W On' : 'B&W Off'; bwToggle.classList.toggle('active-state', isBwMode); };
+
+// SESI FOTO (DENGAN RETAKE PER-FOTO)
+let currentPhotoIndex = 0; let isReviewing = false;
+snapBtn.onclick = () => {
+    capturedImages = []; snapBtn.style.display = 'none'; bwToggle.style.display = 'none';
+    document.getElementById('settings-trigger').style.display = 'none';
+    drawFinalCanvas(); renderPoseDots(photoCount, 0); currentPhotoIndex = 0; runPhotoSequence();
+};
+
+async function runPhotoSequence() {
+    if (currentPhotoIndex >= photoCount) {
+        poseStrip.innerHTML=''; statusEl.textContent='Sesi selesai — cetak atau buat GIF!';
+        processBtn.style.display='inline-block'; makeGifBtn.style.display='inline-block'; resetBtn.style.display='inline-block'; doneBtn.style.display = 'inline-block'; retakeCurrentBtn.style.display = 'none'; return;
+    }
+    let i = currentPhotoIndex; statusEl.textContent = `Pose ${i+1} dari ${photoCount} — bersiap...`; renderPoseDots(photoCount, i);
+    countdownEl.style.display='block'; retakeCurrentBtn.style.display = 'none';
+    for(let c=3; c>0; c--){ countdownEl.textContent=c; beepSound.play(); await new Promise(r=>setTimeout(r,1000)); }
+    countdownEl.style.display='none'; shutterSound.play(); drawPhotoInSlot(i); renderPoseDots(photoCount, i+1);
+    
+    statusEl.textContent = `Lanjut otomatis dalam 3 detik... (Atau klik Ulangi)`; retakeCurrentBtn.style.display = 'inline-block'; isReviewing = true;
+    for(let r=3; r>0; r--) { if (!isReviewing) break; await new Promise(res => setTimeout(res, 1000)); }
+    retakeCurrentBtn.style.display = 'none';
+    if (isReviewing) { isReviewing = false; currentPhotoIndex++; runPhotoSequence(); }
+}
+retakeCurrentBtn.onclick = () => { isReviewing = false; capturedImages[currentPhotoIndex] = null; drawFinalCanvas(); runPhotoSequence(); };
+
+resetBtn.onclick = () => {
+    capturedImages = []; processBtn.style.display = 'none'; makeGifBtn.style.display = 'none'; resetBtn.style.display = 'none'; doneBtn.style.display = 'none'; retakeCurrentBtn.style.display = 'none';
+    snapBtn.style.display = 'inline-block'; bwToggle.style.display = 'inline-block'; document.getElementById('settings-trigger').style.display = 'inline-block';
+    statusEl.textContent = 'Tekan Mulai Sesi untuk mengambil gambar'; poseStrip.innerHTML = ''; drawFinalCanvas();
+};
+
+doneBtn.onclick = () => location.reload();
+
+// PRINT & QR
+processBtn.onclick = async () => {
+    statusEl.textContent='Memproses untuk dicetak...';
+    try {
+        const res = await fetch('/upload',{ method:'POST', headers:{'Content-Type':'application/json'}, body: JSON.stringify({imageBase64:canvas.toDataURL('image/png'),baseUrl:window.location.origin}) });
+        const data = await res.json();
+        if(data.success){
+            const qrImg = new Image(); qrImg.onload = () => {
+                const qPos = getQRPos();
+                const drawQR = (x, y) => { ctx.fillStyle = 'white'; ctx.fillRect(x, y, 58, 58); ctx.drawImage(qrImg, x + 4, y + 4, 50, 50); };
+                drawQR(qPos.x, qPos.y); if (printMode === 'strip') drawQR(qPos.x - (SINGLE_W / 2), qPos.y);
+                document.getElementById('qr-img').src = data.qrCode; document.getElementById('final-preview-img').src = canvas.toDataURL('image/png'); document.getElementById('qr-backdrop').classList.add('visible'); setTimeout(() => window.print(), 500);
+            }; qrImg.src=data.qrCode;
+        }
+    } catch(e) {
+        statusEl.textContent='Memulai simulasi print (Server tidak terhubung)';
+        document.getElementById('qr-img').src = "https://api.qrserver.com/v1/create-qr-code/?size=250x250&data=ModeSimulasiPrint"; document.getElementById('final-preview-img').src = canvas.toDataURL('image/png'); document.getElementById('qr-backdrop').classList.add('visible'); setTimeout(() => window.print(), 1000);
+    }
+};
+
+// GIF
+makeGifBtn.onclick = () => {
+    statusEl.textContent = 'Membuat animasi GIF...'; makeGifBtn.style.display = 'none'; 
+    const imagesData = capturedImages.map(c => c.toDataURL('image/png'));
+    gifshot.createGIF({ images: imagesData, gifWidth: capturedImages[0].width, gifHeight: capturedImages[0].height, interval: 0.4, numFrames: imagesData.length }, function(obj) {
+        if(!obj.error) { const a = document.getElementById('gif-download-link'); a.href = obj.image; document.getElementById('gif-preview-img').src = obj.image; document.getElementById('gif-backdrop').classList.add('visible'); statusEl.textContent = 'GIF berhasil dibuat! 🎬'; makeGifBtn.style.display = 'inline-block'; } else { statusEl.textContent = 'Gagal membuat GIF.'; makeGifBtn.style.display = 'inline-block'; }
+    });
+};
+
+selectMode('single'); renderGallery();
+
+// SCREENSAVER KE LAYAR PILIH FRAME
+let idleTime = 0; const screensaverEl = document.getElementById('screensaver');
+setInterval(() => { idleTime++; if (idleTime >= 45) screensaverEl.classList.add('visible'); }, 1000); // 45 Detik nganggur balik ke SS
+
+function resetIdleTimer() {
+    idleTime = 0;
+    if (screensaverEl.classList.contains('visible')) {
+        screensaverEl.classList.remove('visible');
+        
+        // BUKA LAYAR PILIH FRAME DULUAN
+        document.getElementById('frame-select-screen').style.display = 'block';
+        document.getElementById('studio-screen').style.display = 'none';
+        renderMainFrameGrid(); 
+    }
+}
+window.onload = () => { screensaverEl.classList.add('visible'); };
+window.onmousemove = resetIdleTimer; window.onmousedown = resetIdleTimer; window.ontouchstart = resetIdleTimer; window.onclick = resetIdleTimer; window.onkeypress = resetIdleTimer;
+
+</script>
+</body>
+</html>
